@@ -1,0 +1,11 @@
+{
+    "levels": [
+        {
+            "level": 1,
+            "rows": 3,
+            "cols": 3,
+            "imagePath": "images/pintu/pic2/spriteFrame",
+            "isHardTip": false
+        }
+    ]
+}
