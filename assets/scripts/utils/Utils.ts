@@ -1,19 +1,46 @@
 import { Node, tween, Vec3, screen } from 'cc';
 
 export class Utils {
-    /**汇率浮点数处理 */
-  public static getFloatNum(a: number, b: number) {
-    let aLen = a.toString().split(".")[1]?.length || 0
-    let bLen = b.toString().split(".")[1]?.length || 0
-    let powLen = Math.max(aLen, bLen)
-    let power = Math.pow(10, powLen)
-    const compare = (n) => {
-      let result = Math.round(n)
-      return n - result < Number.EPSILON ? result : n    //最小浮点数之间的差值
+    /**
+ * 获取一个区间的随机数(帧数)
+ * @param $from 最小值
+ * @param $end 最大值
+ * @returns {number}
+ */
+    public static limitInteger($from: number, $end: number): number {
+        return Math.round(this.limit($from, $end));
     }
-    return compare(a * power) * compare(b * power) / power / power
-  }
-  
+    /**
+ * 获取一个区间的随机数
+ * @param $from 最小值
+ * @param $end 最大值
+ * @returns {number}
+ */
+    public static limit($from: number, $end: number): number {
+        $from = Math.min($from, $end);
+        $end = Math.max($from, $end);
+        let range: number = $end - $from;
+        return $from + Math.random() * range;
+    }
+    /**汇率浮点数处理 */
+    public static getFloatNum(a: number, b: number) {
+        let aLen = a.toString().split(".")[1]?.length || 0
+        let bLen = b.toString().split(".")[1]?.length || 0
+        let powLen = Math.max(aLen, bLen)
+        let power = Math.pow(10, powLen)
+        const compare = (n) => {
+            let result = Math.round(n)
+            return n - result < Number.EPSILON ? result : n    //最小浮点数之间的差值
+        }
+        return compare(a * power) * compare(b * power) / power / power
+    }
+    /**
+     * 角度值转换为弧度制
+     * @param angle
+     */
+    public static getRadian(angle: number): number {
+        return angle / 180 * Math.PI;
+    }
     public static getRandomInt(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -92,7 +119,7 @@ export class Utils {
             this.hidePopup(node, duration);
         }
     }
-    public static setScale(node: Node, scale: number,duration:number = 0.07,cb:Function=null): void {
+    public static setScale(node: Node, scale: number, duration: number = 0.07, cb: Function = null): void {
         tween(node)
             .to(duration, { scale: new Vec3(scale, scale, 1) })
             .to(duration, { scale: new Vec3(1, 1, 1) })
