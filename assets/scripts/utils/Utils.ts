@@ -1,6 +1,19 @@
 import { Node, tween, Vec3, screen } from 'cc';
 
 export class Utils {
+    /**汇率浮点数处理 */
+  public static getFloatNum(a: number, b: number) {
+    let aLen = a.toString().split(".")[1]?.length || 0
+    let bLen = b.toString().split(".")[1]?.length || 0
+    let powLen = Math.max(aLen, bLen)
+    let power = Math.pow(10, powLen)
+    const compare = (n) => {
+      let result = Math.round(n)
+      return n - result < Number.EPSILON ? result : n    //最小浮点数之间的差值
+    }
+    return compare(a * power) * compare(b * power) / power / power
+  }
+  
     public static getRandomInt(min: number, max: number): number {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
