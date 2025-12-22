@@ -263,7 +263,7 @@
         "_value": false
       },
       "physics-2d": {
-        "_value": false,
+        "_value": true,
         "_option": "physics-2d-box2d"
       },
       "physics-2d-box2d": {
@@ -348,6 +348,7 @@
       "intersection-2d",
       "marionette",
       "particle-2d",
+      "physics-2d-box2d",
       "primitive",
       "profiler",
       "skeletal-animation",

@@ -18,5 +18,22 @@
       "visible": true
     }
   },
-  "custom_joint_texture_layouts": []
+  "custom_joint_texture_layouts": [],
+  "physics": {
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "dingzi"
+      },
+      {
+        "index": 2,
+        "name": "panel"
+      }
+    ],
+    "collisionMatrix": {
+      "0": 1,
+      "1": 4,
+      "2": 6
+    }
+  }
 }

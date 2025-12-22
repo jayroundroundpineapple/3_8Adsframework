@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, AudioSource, EventTouch } from 'cc';
+import { _decorator, Component, Node, AudioSource, EventTouch, director, Director, PhysicsSystem2D } from 'cc';
 import { AudioManager } from '../utils/AudioManager';
 import { PlayerAdSdk } from '../PlayerAdSdk';
 const { ccclass, property } = _decorator;
@@ -7,6 +7,8 @@ const { ccclass, property } = _decorator;
 export class GameUI extends Component {
     @property(Node)
     private finger: Node = null;
+    @property(Node)
+    private dingZi: Node = null;
 
     private static instance: GameUI = null;
     private bgmNode: Node = null; // 背景音乐节点
@@ -15,15 +17,20 @@ export class GameUI extends Component {
     private audioInitialized: boolean = false; // 音频是否已初始化
     
     protected onLoad(): void {
+        // PhysicsSystem2D.instance.enable = true
         PlayerAdSdk.init();
         // 添加触摸事件监听器，等待用户第一次点击
         this.node.on(Node.EventType.TOUCH_START, this.onFirstTouch, this);
+        this.dingZi.on(Node.EventType.TOUCH_START,this.removeDingzi,this)
     }
     public static getInstance(): GameUI {
         if (!GameUI.instance) {
             GameUI.instance = new GameUI();
         }
         return GameUI.instance;
+    }
+    removeDingzi(){
+        this.dingZi.destroy();
     }
     start() {
         GameUI.instance = this;

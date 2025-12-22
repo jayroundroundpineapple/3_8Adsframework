@@ -17,6 +17,10 @@ export default class RESSpriteFrame extends Component {
     public comeOutAudioClip: AudioClip = null;
     @property({ type: AudioClip })
     public cherrUpAudioClip: AudioClip = null;
+    @property({ type: AudioClip })
+    public cashAudioClip: AudioClip = null;
+    @property({ type: AudioClip })
+    public zhendongAudioClip: AudioClip = null;
     start() {
         RESSpriteFrame.instance = this;
     }
