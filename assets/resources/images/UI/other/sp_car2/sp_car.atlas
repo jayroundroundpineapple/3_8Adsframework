@@ -1,0 +1,713 @@
+
+sp_car.png
+size: 1022, 993
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+arrow_down
+  rotate: true
+  xy: 216, 906
+  size: 68, 138
+  orig: 68, 138
+  offset: 0, 0
+  index: -1
+arrow_left
+  rotate: false
+  xy: 356, 876
+  size: 137, 68
+  orig: 137, 68
+  offset: 0, 0
+  index: -1
+arrow_lower_left
+  rotate: false
+  xy: 709, 841
+  size: 124, 94
+  orig: 124, 94
+  offset: 0, 0
+  index: -1
+arrow_up
+  rotate: true
+  xy: 495, 874
+  size: 68, 138
+  orig: 68, 138
+  offset: 0, 0
+  index: -1
+arrow_upper_left
+  rotate: false
+  xy: 835, 839
+  size: 124, 94
+  orig: 124, 94
+  offset: 0, 0
+  index: -1
+blue/down_middle_body
+  rotate: true
+  xy: 716, 149
+  size: 194, 306
+  orig: 194, 306
+  offset: 0, 0
+  index: -1
+blue/down_small_body
+  rotate: false
+  xy: 800, 592
+  size: 194, 245
+  orig: 194, 245
+  offset: 0, 0
+  index: -1
+blue/left_small_body
+  rotate: false
+  xy: 0, 720
+  size: 271, 184
+  orig: 271, 184
+  offset: 0, 0
+  index: -1
+blue/up_middle_body
+  rotate: true
+  xy: 247, 304
+  size: 196, 269
+  orig: 196, 269
+  offset: 0, 0
+  index: -1
+blue/up_small_body
+  rotate: true
+  xy: 273, 688
+  size: 184, 252
+  orig: 184, 252
+  offset: 0, 0
+  index: -1
+down_big_shadow
+  rotate: true
+  xy: 0, 116
+  size: 186, 438
+  orig: 186, 438
+  offset: 0, 0
+  index: -1
+down_big_wheel_1
+  rotate: true
+  xy: 0, 986
+  size: 7, 74
+  orig: 7, 74
+  offset: 0, 0
+  index: -1
+down_middle_wheel_1
+  rotate: true
+  xy: 153, 977
+  size: 16, 66
+  orig: 16, 66
+  offset: 0, 0
+  index: -1
+down_small_wheel_1
+  rotate: true
+  xy: 221, 977
+  size: 16, 62
+  orig: 16, 62
+  offset: 0, 0
+  index: -1
+green/down_small_body
+  rotate: false
+  xy: 781, 345
+  size: 194, 245
+  orig: 194, 245
+  offset: 0, 0
+  index: -1
+green/left_small_body
+  rotate: false
+  xy: 527, 655
+  size: 271, 184
+  orig: 271, 184
+  offset: 0, 0
+  index: -1
+green/up_middle_body
+  rotate: false
+  xy: 518, 198
+  size: 196, 269
+  orig: 196, 269
+  offset: 0, 0
+  index: -1
+green/up_small_body
+  rotate: true
+  xy: 0, 534
+  size: 184, 252
+  orig: 184, 252
+  offset: 0, 0
+  index: -1
+left_big_wheel_1
+  rotate: false
+  xy: 800, 937
+  size: 72, 56
+  orig: 72, 56
+  offset: 0, 0
+  index: -1
+left_middle_wheel_1
+  rotate: false
+  xy: 731, 941
+  size: 67, 52
+  orig: 67, 52
+  offset: 0, 0
+  index: -1
+left_small_wheel_1
+  rotate: false
+  xy: 576, 944
+  size: 69, 49
+  orig: 69, 49
+  offset: 0, 0
+  index: -1
+lower_left_big_wheel_1
+  rotate: false
+  xy: 635, 870
+  size: 72, 71
+  orig: 72, 71
+  offset: 0, 0
+  index: -1
+lower_left_middle_wheel_1
+  rotate: false
+  xy: 874, 935
+  size: 67, 58
+  orig: 67, 58
+  offset: 0, 0
+  index: -1
+lower_left_small_wheel_1
+  rotate: false
+  xy: 943, 935
+  size: 59, 58
+  orig: 59, 58
+  offset: 0, 0
+  index: -1
+parking_big_wheel_1
+  rotate: true
+  xy: 417, 946
+  size: 47, 79
+  orig: 47, 79
+  offset: 0, 0
+  index: -1
+parking_middle_wheel_1
+  rotate: true
+  xy: 647, 943
+  size: 50, 82
+  orig: 50, 82
+  offset: 0, 0
+  index: -1
+parking_small_wheel_1
+  rotate: true
+  xy: 498, 946
+  size: 47, 76
+  orig: 47, 76
+  offset: 0, 0
+  index: -1
+red/down_small_body
+  rotate: true
+  xy: 0, 338
+  size: 194, 245
+  orig: 194, 245
+  offset: 0, 0
+  index: -1
+red/left_small_body
+  rotate: false
+  xy: 254, 502
+  size: 271, 184
+  orig: 271, 184
+  offset: 0, 0
+  index: -1
+red/up_middle_body
+  rotate: true
+  xy: 440, 0
+  size: 196, 269
+  orig: 196, 269
+  offset: 0, 0
+  index: -1
+red/up_small_body
+  rotate: true
+  xy: 527, 469
+  size: 184, 252
+  orig: 184, 252
+  offset: 0, 0
+  index: -1
+up_big_wheel_1
+  rotate: true
+  xy: 76, 986
+  size: 7, 75
+  orig: 7, 75
+  offset: 0, 0
+  index: -1
+up_middle_wheel_1
+  rotate: true
+  xy: 285, 977
+  size: 16, 66
+  orig: 16, 66
+  offset: 0, 0
+  index: -1
+up_small_wheel_1
+  rotate: true
+  xy: 353, 976
+  size: 17, 62
+  orig: 17, 62
+  offset: 0, 0
+  index: -1
+upper_left_big_wheel_1
+  rotate: false
+  xy: 146, 908
+  size: 68, 67
+  orig: 68, 67
+  offset: 0, 0
+  index: -1
+upper_left_middle_wheel_1
+  rotate: false
+  xy: 72, 923
+  size: 72, 61
+  orig: 72, 61
+  offset: 0, 0
+  index: -1
+upper_left_small_wheel_1
+  rotate: false
+  xy: 0, 925
+  size: 70, 59
+  orig: 70, 59
+  offset: 0, 0
+  index: -1
+
+sp_car_2.png
+size: 1019, 980
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+blue/down_big_body
+  rotate: true
+  xy: 405, 788
+  size: 192, 414
+  orig: 192, 414
+  offset: 0, 0
+  index: -1
+blue/left_middle_body
+  rotate: true
+  xy: 821, 679
+  size: 301, 198
+  orig: 301, 198
+  offset: 0, 0
+  index: -1
+blue/up_big_body
+  rotate: true
+  xy: 308, 594
+  size: 192, 419
+  orig: 192, 419
+  offset: 0, 0
+  index: -1
+down_small_shadow
+  rotate: true
+  xy: 724, 252
+  size: 217, 273
+  orig: 217, 273
+  offset: 0, 0
+  index: -1
+green/down_big_body
+  rotate: true
+  xy: 308, 400
+  size: 192, 414
+  orig: 192, 414
+  offset: 0, 0
+  index: -1
+green/down_middle_body
+  rotate: true
+  xy: 0, 598
+  size: 194, 306
+  orig: 194, 306
+  offset: 0, 0
+  index: -1
+green/left_middle_body
+  rotate: false
+  xy: 421, 200
+  size: 301, 198
+  orig: 301, 198
+  offset: 0, 0
+  index: -1
+green/up_big_body
+  rotate: true
+  xy: 0, 206
+  size: 192, 419
+  orig: 192, 419
+  offset: 0, 0
+  index: -1
+red/down_big_body
+  rotate: true
+  xy: 0, 12
+  size: 192, 414
+  orig: 192, 414
+  offset: 0, 0
+  index: -1
+red/down_middle_body
+  rotate: true
+  xy: 0, 402
+  size: 194, 306
+  orig: 194, 306
+  offset: 0, 0
+  index: -1
+red/left_middle_body
+  rotate: false
+  xy: 416, 0
+  size: 301, 198
+  orig: 301, 198
+  offset: 0, 0
+  index: -1
+up_big_shadow
+  rotate: true
+  xy: 0, 794
+  size: 186, 403
+  orig: 186, 403
+  offset: 0, 0
+  index: -1
+up_middle_shadow
+  rotate: true
+  xy: 724, 31
+  size: 219, 292
+  orig: 219, 292
+  offset: 0, 0
+  index: -1
+up_small_shadow
+  rotate: true
+  xy: 729, 471
+  size: 206, 273
+  orig: 206, 273
+  offset: 0, 0
+  index: -1
+
+sp_car_3.png
+size: 1020, 902
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+blue/left_big_body
+  rotate: false
+  xy: 421, 690
+  size: 408, 212
+  orig: 408, 212
+  offset: 0, 0
+  index: -1
+blue/parking_small_body
+  rotate: true
+  xy: 0, 30
+  size: 245, 292
+  orig: 245, 292
+  offset: 0, 0
+  index: -1
+down_middle_shadow
+  rotate: true
+  xy: 0, 277
+  size: 217, 330
+  orig: 217, 330
+  offset: 0, 0
+  index: -1
+green/left_big_body
+  rotate: false
+  xy: 0, 496
+  size: 408, 212
+  orig: 408, 212
+  offset: 0, 0
+  index: -1
+green/parking_small_body
+  rotate: true
+  xy: 728, 0
+  size: 245, 292
+  orig: 245, 292
+  offset: 0, 0
+  index: -1
+left_big_shadow
+  rotate: false
+  xy: 294, 9
+  size: 432, 236
+  orig: 432, 236
+  offset: 0, 0
+  index: -1
+left_middle_shadow
+  rotate: false
+  xy: 624, 247
+  size: 323, 227
+  orig: 323, 227
+  offset: 0, 0
+  index: -1
+left_small_shadow
+  rotate: false
+  xy: 332, 251
+  size: 290, 223
+  orig: 290, 223
+  offset: 0, 0
+  index: -1
+red/left_big_body
+  rotate: false
+  xy: 410, 476
+  size: 408, 212
+  orig: 408, 212
+  offset: 0, 0
+  index: -1
+red/up_big_body
+  rotate: true
+  xy: 0, 710
+  size: 192, 419
+  orig: 192, 419
+  offset: 0, 0
+  index: -1
+
+sp_car_4.png
+size: 890, 771
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+blue/lower_left_small_body
+  rotate: false
+  xy: 294, 517
+  size: 280, 254
+  orig: 280, 254
+  offset: 0, 0
+  index: -1
+blue/parking_middle_body
+  rotate: true
+  xy: 576, 517
+  size: 254, 310
+  orig: 254, 310
+  offset: 0, 0
+  index: -1
+blue/upper_left_small_body
+  rotate: false
+  xy: 312, 0
+  size: 288, 259
+  orig: 288, 259
+  offset: 0, 0
+  index: -1
+green/lower_left_small_body
+  rotate: false
+  xy: 0, 270
+  size: 280, 254
+  orig: 280, 254
+  offset: 0, 0
+  index: -1
+green/parking_middle_body
+  rotate: true
+  xy: 282, 261
+  size: 254, 310
+  orig: 254, 310
+  offset: 0, 0
+  index: -1
+green/upper_left_small_body
+  rotate: false
+  xy: 602, 0
+  size: 288, 259
+  orig: 288, 259
+  offset: 0, 0
+  index: -1
+red/lower_left_small_body
+  rotate: false
+  xy: 594, 261
+  size: 280, 254
+  orig: 280, 254
+  offset: 0, 0
+  index: -1
+red/parking_middle_body
+  rotate: true
+  xy: 0, 5
+  size: 254, 310
+  orig: 254, 310
+  offset: 0, 0
+  index: -1
+red/parking_small_body
+  rotate: true
+  xy: 0, 526
+  size: 245, 292
+  orig: 245, 292
+  offset: 0, 0
+  index: -1
+
+sp_car_5.png
+size: 1019, 851
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+blue/lower_left_middle_body
+  rotate: true
+  xy: 725, 0
+  size: 300, 294
+  orig: 300, 294
+  offset: 0, 0
+  index: -1
+blue/parking_big_body
+  rotate: true
+  xy: 330, 19
+  size: 281, 393
+  orig: 281, 393
+  offset: 0, 0
+  index: -1
+blue/upper_left_middle_body
+  rotate: false
+  xy: 606, 580
+  size: 303, 271
+  orig: 303, 271
+  offset: 0, 0
+  index: -1
+green/upper_left_middle_body
+  rotate: false
+  xy: 0, 310
+  size: 303, 271
+  orig: 303, 271
+  offset: 0, 0
+  index: -1
+lower_leftt_small_shadow
+  rotate: false
+  xy: 610, 302
+  size: 301, 276
+  orig: 301, 276
+  offset: 0, 0
+  index: -1
+parking_middle_shadow
+  rotate: true
+  xy: 0, 27
+  size: 278, 328
+  orig: 278, 328
+  offset: 0, 0
+  index: -1
+parking_small_shadow
+  rotate: true
+  xy: 290, 583
+  size: 268, 314
+  orig: 268, 314
+  offset: 0, 0
+  index: -1
+red/upper_left_middle_body
+  rotate: false
+  xy: 305, 307
+  size: 303, 271
+  orig: 303, 271
+  offset: 0, 0
+  index: -1
+red/upper_left_small_body
+  rotate: false
+  xy: 0, 592
+  size: 288, 259
+  orig: 288, 259
+  offset: 0, 0
+  index: -1
+
+sp_car_6.png
+size: 785, 1023
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+blue/lower_left_big_body
+  rotate: false
+  xy: 392, 654
+  size: 371, 369
+  orig: 371, 369
+  offset: 0, 0
+  index: -1
+green/lower_left_big_body
+  rotate: false
+  xy: 392, 283
+  size: 371, 369
+  orig: 371, 369
+  offset: 0, 0
+  index: -1
+green/parking_big_body
+  rotate: true
+  xy: 392, 0
+  size: 281, 393
+  orig: 281, 393
+  offset: 0, 0
+  index: -1
+lower_leftt_big_shadow
+  rotate: false
+  xy: 0, 630
+  size: 390, 393
+  orig: 390, 393
+  offset: 0, 0
+  index: -1
+upper_left_big_shadow
+  rotate: false
+  xy: 0, 238
+  size: 390, 390
+  orig: 390, 390
+  offset: 0, 0
+  index: -1
+
+sp_car_7.png
+size: 743, 1024
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+blue/upper_left_big_body
+  rotate: false
+  xy: 0, 283
+  size: 367, 370
+  orig: 367, 370
+  offset: 0, 0
+  index: -1
+green/upper_left_big_body
+  rotate: true
+  xy: 373, 657
+  size: 367, 370
+  orig: 367, 370
+  offset: 0, 0
+  index: -1
+red/lower_left_big_body
+  rotate: false
+  xy: 0, 655
+  size: 371, 369
+  orig: 371, 369
+  offset: 0, 0
+  index: -1
+red/parking_big_body
+  rotate: true
+  xy: 0, 0
+  size: 281, 393
+  orig: 281, 393
+  offset: 0, 0
+  index: -1
+red/upper_left_big_body
+  rotate: false
+  xy: 369, 283
+  size: 367, 370
+  orig: 367, 370
+  offset: 0, 0
+  index: -1
+upper_left_small_shadow
+  rotate: false
+  xy: 395, 0
+  size: 306, 281
+  orig: 306, 281
+  offset: 0, 0
+  index: -1
+
+sp_car_8.png
+size: 933, 610
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+green/lower_left_middle_body
+  rotate: true
+  xy: 635, 310
+  size: 300, 294
+  orig: 300, 294
+  offset: 0, 0
+  index: -1
+lower_leftt_middle_shadow
+  rotate: false
+  xy: 307, 0
+  size: 324, 316
+  orig: 324, 316
+  offset: 0, 0
+  index: -1
+parking_big_shadow
+  rotate: false
+  xy: 0, 193
+  size: 305, 417
+  orig: 305, 417
+  offset: 0, 0
+  index: -1
+red/lower_left_middle_body
+  rotate: false
+  xy: 633, 14
+  size: 300, 294
+  orig: 300, 294
+  offset: 0, 0
+  index: -1
+upper_left_middle_shadow
+  rotate: false
+  xy: 307, 318
+  size: 326, 292
+  orig: 326, 292
+  offset: 0, 0
+  index: -1
