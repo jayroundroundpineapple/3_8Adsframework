@@ -1,6 +1,7 @@
-import { _decorator, Component, Node, AudioSource, EventTouch, director, Director, PhysicsSystem2D } from 'cc';
+import { _decorator, Component, Node, AudioSource, EventTouch, director, Director, PhysicsSystem2D, tween, Vec3, UITransform, macro, Skeleton, sp } from 'cc';
 import { AudioManager } from '../utils/AudioManager';
 import { PlayerAdSdk } from '../PlayerAdSdk';
+import { Macro } from './Macro';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameUI')
@@ -8,8 +9,12 @@ export class GameUI extends Component {
     @property(Node)
     private finger: Node = null;
     @property(Node)
-    private dingZi: Node = null;
+    private targetPosNode: Node = null;
+    @property(Node)
+    private CarNode1: Node = null;
+    
 
+    private parkingCarArr: Node[] = [];
     private static instance: GameUI = null;
     private bgmNode: Node = null; // 背景音乐节点
     private sfxNode: Node = null; // 音效节点
@@ -21,7 +26,7 @@ export class GameUI extends Component {
         PlayerAdSdk.init();
         // 添加触摸事件监听器，等待用户第一次点击
         this.node.on(Node.EventType.TOUCH_START, this.onFirstTouch, this);
-        this.dingZi.on(Node.EventType.TOUCH_START,this.removeDingzi,this)
+        this.CarNode1.on(Node.EventType.TOUCH_START,this.moveCar1,this)
     }
     public static getInstance(): GameUI {
         if (!GameUI.instance) {
@@ -29,8 +34,36 @@ export class GameUI extends Component {
         }
         return GameUI.instance;
     }
-    removeDingzi(){
-        this.dingZi.destroy();
+    moveCar1(){
+        let targetPos = this.targetPosNode.parent.getComponent(UITransform).convertToWorldSpaceAR(this.targetPosNode.position);
+        targetPos = this.CarNode1.parent.getComponent(UITransform).convertToNodeSpaceAR(targetPos);
+        //获取车位的相对坐标
+        tween(this.CarNode1)
+        .to(0.2, { position: new Vec3(this.CarNode1.position.x, targetPos.y - Macro.PARKING_ROAD_GAP_Y, 0) })
+        .call(()=>{
+            this.CarNode1.getComponent(sp.Skeleton).setAnimation(0, 'left_small_static', true);
+        })
+        .to(0.2, { position: new Vec3(Macro.PARKING_ROAD_LEFT_X, targetPos.y - Macro.PARKING_ROAD_GAP_Y, 0) })
+        .call(()=>{
+            this.CarNode1.getComponent(sp.Skeleton).setAnimation(0, 'up_small_static', true);
+        })
+        .to(0.12, { position: new Vec3(Macro.PARKING_ROAD_LEFT_X, Macro.PARKING_ROAD_BOTTOM_Y, 0) })
+        .call(()=>{
+            this.CarNode1.setScale(-1, 1, 1);
+            this.CarNode1.getComponent(sp.Skeleton).setAnimation(0, 'left_small_static', true);
+        })
+        .to(0.2, { position: new Vec3(targetPos.x, Macro.PARKING_ROAD_BOTTOM_Y, 0) })
+        .call(()=>{
+            this.CarNode1.getComponent(sp.Skeleton).setAnimation(0, 'up_small_static', true);
+            this.CarNode1.setScale(1, 1, 1);
+        })
+        .to(0.12, { position: new Vec3(targetPos.x, targetPos.y, 0),eulerAngles: new Vec3(0, 0, Macro.PARKING_ROAD_ANGLE) })
+        .delay(0.05)
+        .call(()=>{
+            this.CarNode1.angle = Macro.PARKINGSPine_ROAD_ANGLE;
+            this.CarNode1.getComponent(sp.Skeleton).setAnimation(0, 'parking_small_appear', false);
+        })
+        .start();
     }
     start() {
         GameUI.instance = this;
