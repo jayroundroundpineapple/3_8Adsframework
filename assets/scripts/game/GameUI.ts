@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, AudioSource, EventTouch, tween, Vec2, Vec3, UITransform, macro, Skeleton, sp, Prefab, Label, Mask, UIOpacity, utils } from 'cc';
+import { _decorator, Component, Node, AudioSource, EventTouch, tween, Vec2, Vec3, UITransform, macro, Skeleton, sp, Prefab, Label, Mask, UIOpacity, utils, Widget, director } from 'cc';
 import { AudioManager } from '../utils/AudioManager';
 import { PlayerAdSdk } from '../PlayerAdSdk';
 import { Macro, dingColor } from './Macro';
@@ -169,6 +169,7 @@ export class GameUI extends Component {
                 })
                 .delay(0.1)
                 .call(() => {
+                    this.GameAudioSource.playOneShot(RESSpriteFrame.instance.zhendongAudioClip, 1);
                     Anim.ins().shakeEffect(this.citieNode, 1.5);
                     tween(opacity)
                         .to(0.2, { opacity: 100 })
@@ -241,6 +242,7 @@ export class GameUI extends Component {
         },{easing: 'quadOut'})
         .call(()=>{
             this.amount += 150
+            this.GameAudioSource.playOneShot(RESSpriteFrame.instance.cashAudioClip, 1);
             this.moneyChange.play(this.amount, 0.6, () => {
                 this.showResult()
             });
@@ -248,6 +250,10 @@ export class GameUI extends Component {
         .start();
     }
     showResult(){
+        director.getScene().getComponentsInChildren(Widget).forEach(function (t) {
+                t.updateAlignment()
+        });
+        this.GameAudioSource.playOneShot(RESSpriteFrame.instance.comeOutAudioClip, 1);
         Utils.showPopup(this.resultNode, 0.3, 'backOut', () => {
             this.GameAudioSource.playOneShot(RESSpriteFrame.instance.cherrUpAudioClip, 1);
         });
