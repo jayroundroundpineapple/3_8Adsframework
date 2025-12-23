@@ -15,6 +15,8 @@ export class GameUI extends Component {
     @property(Node)
     private CarNode1: Node = null;
     @property(Node)
+    private CarNode2: Node = null;
+    @property(Node)
     private dingziContent:Node = null;
     @property(Node)
     private parkingCar0:Node = null;

@@ -2032,14 +2032,14 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": -197.549,
-      "y": 2.1669999999999163,
+      "y": 2.167,
       "z": 0
     },
     "_lrot": {
       "__type__": "cc.Quat",
       "x": 0,
       "y": 0,
-      "z": 0.021814885034561124,
+      "z": 0.02181488503456112,
       "w": 0.9997620270799091
     },
     "_lscale": {
@@ -2054,7 +2054,7 @@
       "__type__": "cc.Vec3",
       "x": 0,
       "y": 0,
-      "z": 2.5000000000000004
+      "z": 2.5
     },
     "_id": "68bWPdl+xGFovfuX5NpKSS"
   },
@@ -2456,6 +2456,7 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "isSelfSet": true,
     "slotIndex": 0,
     "carColor": 0,
     "carType": 0,
@@ -2698,6 +2699,7 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "isSelfSet": true,
     "slotIndex": 1,
     "carColor": 2,
     "carType": 1,
@@ -6229,6 +6231,7 @@
     },
     "_enabled": true,
     "__prefab": null,
+    "isSelfSet": false,
     "slotIndex": 2,
     "carColor": 0,
     "carType": 1,

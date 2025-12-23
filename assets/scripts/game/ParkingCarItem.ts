@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Vec3, Prefab, instantiate, tween, UITransform } from 'cc';
+import { _decorator, Component, Node, Vec3, Prefab, instantiate, tween, UITransform, sp } from 'cc';
 import { Macro, CarType, dingColor } from './Macro';
 import { GameUI } from './GameUI';
 const { ccclass, property } = _decorator;
@@ -9,6 +9,12 @@ const { ccclass, property } = _decorator;
  */
 @ccclass('ParkingCarItem')
 export class ParkingCarItem extends Component {
+    @property({
+        type:Boolean,
+        tooltip: '是否是自己设置停车场内的车辆,默认是false'
+    })
+    public isSelfSet:boolean = false;
+
     @property({
         type: Number,
         tooltip: '车位索引（第几个车位）'
@@ -158,11 +164,16 @@ export class ParkingCarItem extends Component {
         // 获取钉子位置
         const nailPositions = this.getNailPositions();
         const targetPos = nailPositions[this.currentNailIndex];
+        
+        // 记录这是否是最后一个钉子（安装后车辆会装满）
+        const willBeFull = this.currentNailIndex + 1 >= this.getMaxNails();
+        
         // 设置钉子位置和父节点
         let nowPos = nailNode.parent.getComponent(UITransform).convertToWorldSpaceAR(nailNode.position);
         nailNode.setParent(this.node);
         nowPos = this.node.getComponent(UITransform).convertToNodeSpaceAR(nowPos);
         nailNode.setPosition(nowPos);
+        
         tween(nailNode)
         .delay(0.1)
         .to(0.4, { scale: new Vec3(1.1, 1.1, 1) ,position: new Vec3(nowPos.x + 5, nowPos.y + 2, 0)}, { easing: 'quadOut' })
@@ -170,12 +181,38 @@ export class ParkingCarItem extends Component {
         .to(0.4, { position: targetPos ,scale: new Vec3(Macro.CAR_DI_SCALE, Macro.CAR_DI_SCALE, 1) }, { easing: 'quadOut' })
         .call(()=>{
             nailNode.setScale(Macro.CAR_DI_SCALE, Macro.CAR_DI_SCALE, 1);
+            
+            // 钉子动画完成后，如果这是最后一个钉子（车辆已装满），则放大车辆
+            if (willBeFull) {
+                console.log('jay安装满了,开始移开')
+                this.moveOutCar();
+            }
         })
         .start();
 
         this.installedNails[this.currentNailIndex] = nailNode;
         this.currentNailIndex++;
+        
         return true;
+    }
+
+    /**
+     * 车辆装满钉子后离开停车场
+     */
+    private moveOutCar(): void {
+        let posX = this.node.position.x;
+        this.node.eulerAngles = new Vec3(0, 0, Macro.CAR_LEAVE_ANGLE1);
+        let roadBottomY = this.isSelfSet ? Macro.CUSTOM_PARKING_ROAD_BOTTOM_Y : Macro.PARKING_ROAD_BOTTOM_Y;
+        tween(this.node)
+        .delay(0.05)
+            .to(0.2, { position: new Vec3(posX, roadBottomY, 0)
+            ,eulerAngles: new Vec3(0, 0, Macro.CAR_LEAVE_ANGLE1)})
+            .to(0.1, {eulerAngles: new Vec3(0, 0, Macro.CAR_LEAVE_ANGLE2)})
+            .by(0.5, { position: new Vec3(750, 0, 0) })
+            .call(() => {
+                console.log(`[ParkingCarItem] 车辆 ${this.node.name} 已装满钉子并放大`);
+            })
+            .start();
     }
 
     /**

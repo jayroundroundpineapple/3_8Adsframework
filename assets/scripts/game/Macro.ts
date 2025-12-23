@@ -26,11 +26,16 @@ export class Macro {
     public static readonly PARKING_ROAD_RIGHT_X = -300;
     /**停车位下边跑道Y */
     public static readonly PARKING_ROAD_BOTTOM_Y = 560;
+     /**自定义停车位下边跑道Y */
+     public static readonly CUSTOM_PARKING_ROAD_BOTTOM_Y = -70;
     /**移动车位角度 */
     public static readonly PARKING_ROAD_ANGLE = 25;
      /**停车spine车位角度 */
-     public static readonly PARKINGSPine_ROAD_ANGLE = 2.5;
-
+    public static readonly PARKINGSPine_ROAD_ANGLE = 2.5;
+    /**车辆离开角度1 */
+    public static readonly CAR_LEAVE_ANGLE1 = -195;
+    /**车辆横向离开角度 */
+    public static readonly CAR_LEAVE_ANGLE2 = -108;
     /**小车的4个钉子位置 */
     public static readonly SMALL_CAR_DINGZIPOS_ARR = [
         new Vec3(-10, 8, 0),
