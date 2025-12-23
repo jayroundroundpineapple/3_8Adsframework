@@ -12,6 +12,8 @@ const { ccclass, property } = _decorator;
 @ccclass('GameUI')
 export class GameUI extends Component {
     @property(Node)
+    private resultNode: Node = null;
+    @property(Node)
     private citieBtn: Node = null;
     @property(Node)
     private citieNode: Node = null;
@@ -74,6 +76,7 @@ export class GameUI extends Component {
         (window as any).gameUI = this;
         // 初始化完成后自动开始游戏
         this.initAudio()
+        this.resultNode.active = false;
         this.moneyChange = new MoneyChange(this.moneyLabel, false, this.amount);
         this.moneyChange.prefix = '$';
         this.moneyLabel.string = this.moneyChange.prefix + this.amount.toString();
@@ -245,7 +248,9 @@ export class GameUI extends Component {
         .start();
     }
     showResult(){
-
+        Utils.showPopup(this.resultNode, 0.3, 'backOut', () => {
+            this.GameAudioSource.playOneShot(RESSpriteFrame.instance.cherrUpAudioClip, 1);
+        });
     }
     /**
      * 通用函数：从左边路径移动车辆到车位
