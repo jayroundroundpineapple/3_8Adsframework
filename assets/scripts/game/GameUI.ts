@@ -15,6 +15,10 @@ export class GameUI extends Component {
     private CarNode1: Node = null;
     @property(Node)
     private dingziContent:Node = null;
+    @property(Node)
+    private parkingCar0:Node = null;
+    @property(Node)
+    private parkingCar1:Node = null;
 
     blockArr:Node[] = [];
     private parkingCarArr: Node[] = [];
@@ -29,7 +33,6 @@ export class GameUI extends Component {
     private nailColorMap: Map<Node, dingColor> = new Map(); // 钉子节点 -> 钉子颜色
     
     protected onLoad(): void {
-        // PhysicsSystem2D.instance.enable = true
         PlayerAdSdk.init();
         // 添加触摸事件监听器，等待用户第一次点击
         this.node.on(Node.EventType.TOUCH_START, this.onFirstTouch, this);
@@ -37,6 +40,10 @@ export class GameUI extends Component {
         
         // 初始化钉子系统
         this.initNailsSystem();
+        //一开始停车位里面有2辆车
+        this.parkingCarArr.push(this.parkingCar0);
+        this.parkingCarArr.push(this.parkingCar1);
+        this.parkingCarArr.push(this.CarNode1);
     }
     public static getInstance(): GameUI {
         if (!GameUI.instance) {
@@ -116,49 +123,30 @@ export class GameUI extends Component {
         this.audioManager.init(this.bgmNode, this.sfxNode);
         // this.sfxNode.getComponent(AudioSource).playOneShot(RESSpriteFrame.instance.clickAudioClip, 1);
     }
-    cashoutFunc(){
-        PlayerAdSdk.jumpStore();
-        PlayerAdSdk.gameEnd();
-    }
-
+   
     private initNailsSystem(): void {
-        if (!this.dingziContent) {
-            console.warn('[GameUI] dingziContent节点未设置');
-            return;
-        }
-
         this.blockNailsMap.clear();
         this.nailColorMap.clear();
-
         this.blockArr = this.dingziContent.children;
-        
         for (let i = 0; i < this.blockArr.length; i++) {
             const blockNode = this.blockArr[i];
             const nails: Node[] = [];
-
-            // 遍历该面板下的所有子节点（钉子）
             const nailNodes = blockNode.children;
-            
             for (let j = 0; j < nailNodes.length; j++) {
                 const nailNode = nailNodes[j];
                 const nailName = nailNode.name;
-
-                // 钉子的名字是 "0", "1", "2" 分别代表红色、绿色、蓝色
                 if (nailName === '0' || nailName === '1' || nailName === '2') {
                     const color = parseInt(nailName) as dingColor;
                     nails.push(nailNode);
                     this.nailColorMap.set(nailNode, color);
                 }
             }
-
             // 将面板和其钉子数组存入Map
             if (nails.length > 0) {
                 this.blockNailsMap.set(blockNode, nails);
                 console.log(`[GameUI] 面板 ${blockNode.name} 有 ${nails.length} 个钉子`);
             }
         }
-
-        console.log(`[GameUI] 钉子系统初始化完成，共 ${this.blockNailsMap.size} 个面板`);
     }
 
     /**
@@ -250,7 +238,7 @@ export class GameUI extends Component {
         this.blockNailsMap.delete(blockNode);
 
         // 计算下落距离（可以自定义，这里设置为屏幕外）
-        const fallDistance = 1000; // 下落距离
+        const fallDistance = 2000; // 下落距离
         const currentPos = blockNode.getPosition();
         const targetY = currentPos.y - fallDistance;
 
@@ -328,19 +316,6 @@ export class GameUI extends Component {
      * 将面板上的红色钉子装到车上
      */
     private installNailsToCar(): void {
-        // 获取车辆组件
-        const carItem = this.CarNode1.getComponent(ParkingCarItem);
-        if (!carItem) {
-            console.warn('[GameUI] CarNode1 上未找到 ParkingCarItem 组件');
-            return;
-        }
-
-        // 检查车辆是否已满
-        if (carItem.isFull()) {
-            console.log('[GameUI] 车辆已装满钉子');
-            return;
-        }
-
         // 收集所有红色钉子
         const redNails: Node[] = [];
         for (const [nailNode, nailColor] of this.nailColorMap.entries()) {
@@ -354,28 +329,67 @@ export class GameUI extends Component {
             return;
         }
 
-        console.log(`[GameUI] 找到 ${redNails.length} 个红色钉子，开始安装到车辆`);
-
-        // 逐个安装钉子到车辆
-        let installedCount = 0;
-        for (const nailNode of redNails) {
-            if (carItem.isFull()) {
-                break;
+        // 找到所有红色车辆
+        const redCars: ParkingCarItem[] = [];
+        for (const carNode of this.parkingCarArr) {
+            if (!carNode || !carNode.isValid) {
+                continue;
             }
-
-            // 从面板上移除钉子（不销毁）
-            if (this.removeNailFromBlock(nailNode)) {
-                // 安装到车辆
-                if (carItem.installNail(nailNode)) {
-                    installedCount++;
-                } else {
-                    // 如果安装失败，销毁钉子
-                    nailNode.destroy();
-                }
+            const carItem = carNode.getComponent(ParkingCarItem);
+            if (carItem && carItem.carColor === dingColor.RED) {
+                redCars.push(carItem);
             }
         }
 
-        console.log(`[GameUI] 成功安装 ${installedCount} 个红色钉子到车辆`);
+        if (redCars.length === 0) {
+            console.log('[GameUI] 没有找到红色车辆');
+            return;
+        }
+
+        console.log(`[GameUI] 找到 ${redNails.length} 个红色钉子和 ${redCars.length} 辆红色车辆`);
+
+        // 按顺序给每辆车安装钉子
+        let nailIndex = 0;
+        let totalInstalledCount = 0;
+
+        for (let carIndex = 0; carIndex < redCars.length; carIndex++) {
+            const carItem = redCars[carIndex];
+            
+            // 如果当前车辆已满，跳过
+            if (carItem.isFull()) {
+                console.log(`[GameUI] 车辆 ${carIndex} 已满，跳过`);
+                continue;
+            }
+
+            // 给当前车辆安装钉子，直到装满或没有钉子了
+            while (nailIndex < redNails.length && !carItem.isFull()) {
+                const nailNode = redNails[nailIndex];
+                
+                // 从面板上移除钉子（不销毁）
+                if (this.removeNailFromBlock(nailNode)) {
+                    // 安装到车辆
+                    if (carItem.installNail(nailNode)) {
+                        totalInstalledCount++;
+                        console.log(`[GameUI] 将钉子安装到车辆 ${carIndex}，当前车辆已装 ${carItem.getInstalledNailCount()} 个`);
+                    } else {
+                        // 如果安装失败，销毁钉子
+                        nailNode.destroy();
+                    }
+                } else {
+                    // 如果移除失败，销毁钉子
+                    nailNode.destroy();
+                }
+                
+                nailIndex++;
+            }
+
+            // 如果所有钉子都用完了，退出循环
+            if (nailIndex >= redNails.length) {
+                break;
+            }
+        }
+
+        console.log(`[GameUI] 成功安装 ${totalInstalledCount} 个红色钉子到车辆`);
     }
 
     /**
@@ -421,6 +435,10 @@ export class GameUI extends Component {
         }
 
         return false;
+    }
+    cashoutFunc(){
+        PlayerAdSdk.jumpStore();
+        PlayerAdSdk.gameEnd();
     }
 }
 

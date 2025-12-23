@@ -1999,8 +1999,8 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "parkingCar",
-    "_objFlags": 0,
+    "_name": "parkingCar0",
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 51
@@ -2061,7 +2061,7 @@
   {
     "__type__": "cc.Node",
     "_name": "ding1",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 52
@@ -2079,8 +2079,8 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -9.928,
-      "y": 8.048,
+      "x": -10,
+      "y": 8,
       "z": 0
     },
     "_lrot": {
@@ -2170,7 +2170,7 @@
   {
     "__type__": "cc.Node",
     "_name": "ding1",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 52
@@ -2188,8 +2188,8 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 9.045,
-      "y": 13.056,
+      "x": 9,
+      "y": 13,
       "z": 0
     },
     "_lrot": {
@@ -2279,7 +2279,7 @@
   {
     "__type__": "cc.Node",
     "_name": "ding1",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 52
@@ -2297,8 +2297,8 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -2.998,
-      "y": -8.781,
+      "x": -3,
+      "y": -9,
       "z": 0
     },
     "_lrot": {
@@ -2460,11 +2460,12 @@
     "carColor": 0,
     "carType": 0,
     "nailPrefab": null,
+    "currentNailIndex": 3,
     "_id": "56Msni8zBFLKsWFWMLcJDT"
   },
   {
     "__type__": "cc.Node",
-    "_name": "parkingCar2",
+    "_name": "parkingCar1",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -2701,6 +2702,7 @@
     "carColor": 2,
     "carType": 1,
     "nailPrefab": null,
+    "currentNailIndex": 0,
     "_id": "b0kG++qxhBiIcOuXfiuovc"
   },
   {
@@ -5265,8 +5267,8 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -90.482,
-      "y": 35.088,
+      "x": -105.011,
+      "y": 24.453,
       "z": 0
     },
     "_lrot": {
@@ -6231,6 +6233,7 @@
     "carColor": 0,
     "carType": 1,
     "nailPrefab": null,
+    "currentNailIndex": 0,
     "_id": "fcOvKhgsJBIoBNZ0OtaBsY"
   },
   {
@@ -7934,6 +7937,12 @@
     },
     "dingziContent": {
       "__id__": 78
+    },
+    "parkingCar0": {
+      "__id__": 52
+    },
+    "parkingCar1": {
+      "__id__": 65
     },
     "_id": "8f1aM4EMRM/ZKgx7Fz1Skq"
   },

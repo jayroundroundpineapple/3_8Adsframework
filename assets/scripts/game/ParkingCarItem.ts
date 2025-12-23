@@ -31,11 +31,14 @@ export class ParkingCarItem extends Component {
         tooltip: '钉子预制体（可选，如果需要动态创建钉子）'
     })
     public nailPrefab: Prefab = null;
-
+    @property({
+        type: Number,
+        tooltip: '当前钉子索引（用于下一个要装的钉子位置）'
+    })
+    public currentNailIndex:number = 0;
     // 当前已装的钉子数组
     private installedNails: Node[] = [];
-    // 当前钉子索引（下一个要装的钉子位置）
-    private currentNailIndex: number = 0;
+    
 
     protected onLoad(): void {
         this.initCar();
@@ -48,8 +51,6 @@ export class ParkingCarItem extends Component {
         // 根据车辆类型初始化钉子位置
         const maxNails = this.getMaxNails();
         this.installedNails = new Array(maxNails).fill(null);
-        this.currentNailIndex = 0;
-
         // 如果车辆已经有钉子（编辑器预设），需要记录它们
         this.initExistingNails();
     }
@@ -64,11 +65,8 @@ export class ParkingCarItem extends Component {
         for (let i = 0; i < children.length; i++) {
             const child = children[i];
             const nailName = child.name;
-
-            // 检查是否是钉子节点（名字是 "0", "1", "2"）
             if (nailName === '0' || nailName === '1' || nailName === '2') {
                 const nailColor = parseInt(nailName) as dingColor;
-                
                 // 检查钉子颜色是否匹配车辆颜色
                 if (nailColor === this.carColor) {
                     // 找到对应的位置索引
