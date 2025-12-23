@@ -1,5 +1,6 @@
-import { _decorator, Component, Node, Vec3, Prefab, instantiate } from 'cc';
+import { _decorator, Component, Node, Vec3, Prefab, instantiate, tween, UITransform } from 'cc';
 import { Macro, CarType, dingColor } from './Macro';
+import { GameUI } from './GameUI';
 const { ccclass, property } = _decorator;
 
 /**
@@ -157,18 +158,23 @@ export class ParkingCarItem extends Component {
         // 获取钉子位置
         const nailPositions = this.getNailPositions();
         const targetPos = nailPositions[this.currentNailIndex];
-
         // 设置钉子位置和父节点
+        let nowPos = nailNode.parent.getComponent(UITransform).convertToWorldSpaceAR(nailNode.position);
         nailNode.setParent(this.node);
-        nailNode.setPosition(targetPos);
-        nailNode.setScale(Macro.CAR_DI_SCALE, Macro.CAR_DI_SCALE, 1);
+        nowPos = this.node.getComponent(UITransform).convertToNodeSpaceAR(nowPos);
+        nailNode.setPosition(nowPos);
+        tween(nailNode)
+        .delay(0.1)
+        .to(0.4, { scale: new Vec3(1.1, 1.1, 1) ,position: new Vec3(nowPos.x + 5, nowPos.y + 2, 0)}, { easing: 'quadOut' })
+        .delay(0.2)
+        .to(0.4, { position: targetPos ,scale: new Vec3(Macro.CAR_DI_SCALE, Macro.CAR_DI_SCALE, 1) }, { easing: 'quadOut' })
+        .call(()=>{
+            nailNode.setScale(Macro.CAR_DI_SCALE, Macro.CAR_DI_SCALE, 1);
+        })
+        .start();
 
-        // 记录钉子
         this.installedNails[this.currentNailIndex] = nailNode;
         this.currentNailIndex++;
-
-        console.log(`[ParkingCarItem] 车辆 ${this.node.name} 安装第 ${this.currentNailIndex} 个钉子成功`);
-
         return true;
     }
 

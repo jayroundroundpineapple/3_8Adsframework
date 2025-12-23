@@ -3,6 +3,7 @@ import { AudioManager } from '../utils/AudioManager';
 import { PlayerAdSdk } from '../PlayerAdSdk';
 import { Macro, dingColor } from './Macro';
 import { ParkingCarItem } from './ParkingCarItem';
+import RESSpriteFrame from '../RESSpriteFrame';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameUI')
@@ -20,9 +21,10 @@ export class GameUI extends Component {
     @property(Node)
     private parkingCar1:Node = null;
 
+    GameAudioSource:AudioSource = null;
     blockArr:Node[] = [];
     private parkingCarArr: Node[] = [];
-    private static instance: GameUI = null;
+    public static instance: GameUI = null;
     private bgmNode: Node = null; // 背景音乐节点
     private sfxNode: Node = null; // 音效节点
     private audioManager: AudioManager = null; // 音频管理器
@@ -37,13 +39,17 @@ export class GameUI extends Component {
         // 添加触摸事件监听器，等待用户第一次点击
         this.node.on(Node.EventType.TOUCH_START, this.onFirstTouch, this);
         this.CarNode1.on(Node.EventType.TOUCH_START,this.moveCar1,this)
-        
         // 初始化钉子系统
         this.initNailsSystem();
         //一开始停车位里面有2辆车
         this.parkingCarArr.push(this.parkingCar0);
         this.parkingCarArr.push(this.parkingCar1);
-        this.parkingCarArr.push(this.CarNode1);
+    }
+    start() {
+        GameUI.instance = this;
+        (window as any).gameUI = this;
+        // 初始化完成后自动开始游戏
+        this.initAudio()
     }
     public static getInstance(): GameUI {
         if (!GameUI.instance) {
@@ -52,6 +58,9 @@ export class GameUI extends Component {
         return GameUI.instance;
     }
     moveCar1(){
+        this.CarNode1.off(Node.EventType.TOUCH_START,this.moveCar1,this)
+        this.parkingCarArr.push(this.CarNode1);
+        this.GameAudioSource.playOneShot(RESSpriteFrame.instance.clickAudioClip, 1);
         let targetPos = this.targetPosNode.parent.getComponent(UITransform).convertToWorldSpaceAR(this.targetPosNode.position);
         targetPos = this.CarNode1.parent.getComponent(UITransform).convertToNodeSpaceAR(targetPos);
         //获取车位的相对坐标
@@ -86,11 +95,7 @@ export class GameUI extends Component {
         })
         .start();
     }
-    start() {
-        GameUI.instance = this;
-        (window as any).gameUI = this;
-        // 初始化完成后自动开始游戏
-    }
+   
     /**
      * 第一次触摸屏幕时调用（初始化音频系统）
      */
@@ -98,10 +103,10 @@ export class GameUI extends Component {
         if (this.audioInitialized) {
             return;
         }
-        // 初始化音频系统
-        this.initAudio();
-        this.audioInitialized = true;
         this.node.off(Node.EventType.TOUCH_START, this.onFirstTouch, this);
+        this.audioManager.init(this.bgmNode, this.sfxNode); //播放bgm
+        const newLocal = this;
+        newLocal.audioInitialized = true;
     }
     
     /**
@@ -120,8 +125,13 @@ export class GameUI extends Component {
             this.sfxNode.addComponent(AudioSource);
         }
         // 初始化音频管理器（会自动播放背景音乐）
-        this.audioManager.init(this.bgmNode, this.sfxNode);
+        // this.audioManager.init(this.bgmNode, this.sfxNode);
+        this.GameAudioSource = this.sfxNode.getComponent(AudioSource);
         // this.sfxNode.getComponent(AudioSource).playOneShot(RESSpriteFrame.instance.clickAudioClip, 1);
+    }
+    /**车子离开停车位动画 */
+    private moveCarOutAnimation(): void {
+       
     }
    
     private initNailsSystem(): void {
@@ -231,20 +241,18 @@ export class GameUI extends Component {
         if (!blockNode || !blockNode.isValid) {
             return;
         }
-
         console.log(`[GameUI] 面板 ${blockNode.name} 所有钉子已消除，开始下落`);
-
         // 从Map中移除该面板
         this.blockNailsMap.delete(blockNode);
 
-        // 计算下落距离（可以自定义，这里设置为屏幕外）
-        const fallDistance = 2000; // 下落距离
+        const fallDistance = 1500; // 下落距离
         const currentPos = blockNode.getPosition();
         const targetY = currentPos.y - fallDistance;
 
         // 使用tween让面板下落
         tween(blockNode)
-            .to(0.5, { 
+        .delay(.5)
+            .to(1.3, { 
                 position: new Vec3(currentPos.x, targetY, currentPos.z) 
             }, {
                 easing: 'sineIn' // 加速下落效果
@@ -345,9 +353,6 @@ export class GameUI extends Component {
             console.log('[GameUI] 没有找到红色车辆');
             return;
         }
-
-        console.log(`[GameUI] 找到 ${redNails.length} 个红色钉子和 ${redCars.length} 辆红色车辆`);
-
         // 按顺序给每辆车安装钉子
         let nailIndex = 0;
         let totalInstalledCount = 0;
@@ -355,7 +360,6 @@ export class GameUI extends Component {
         for (let carIndex = 0; carIndex < redCars.length; carIndex++) {
             const carItem = redCars[carIndex];
             
-            // 如果当前车辆已满，跳过
             if (carItem.isFull()) {
                 console.log(`[GameUI] 车辆 ${carIndex} 已满，跳过`);
                 continue;
@@ -367,22 +371,17 @@ export class GameUI extends Component {
                 
                 // 从面板上移除钉子（不销毁）
                 if (this.removeNailFromBlock(nailNode)) {
-                    // 安装到车辆
                     if (carItem.installNail(nailNode)) {
                         totalInstalledCount++;
                         console.log(`[GameUI] 将钉子安装到车辆 ${carIndex}，当前车辆已装 ${carItem.getInstalledNailCount()} 个`);
                     } else {
-                        // 如果安装失败，销毁钉子
                         nailNode.destroy();
                     }
                 } else {
-                    // 如果移除失败，销毁钉子
                     nailNode.destroy();
                 }
-                
                 nailIndex++;
             }
-
             // 如果所有钉子都用完了，退出循环
             if (nailIndex >= redNails.length) {
                 break;
