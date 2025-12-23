@@ -374,7 +374,7 @@ export class GameUI extends Component {
             return;
         }
         this.node.off(Node.EventType.TOUCH_START, this.onFirstTouch, this);
-        this.audioManager.init(this.bgmNode, this.sfxNode); //播放bgm
+        // this.audioManager.init(this.bgmNode, this.sfxNode); //播放bgm
         const newLocal = this;
         newLocal.audioInitialized = true;
     }
