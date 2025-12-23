@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, AudioSource, EventTouch, tween, Vec2, Vec3, UITransform, macro, Skeleton, sp, Prefab, Label, Mask, UIOpacity, utils, Widget, director } from 'cc';
+import { _decorator, Component, Node, AudioSource, EventTouch, tween, Vec2, Vec3, UITransform, sp, Prefab, Label, Mask, UIOpacity, utils, Widget, director, Animation } from 'cc';
 import { AudioManager } from '../utils/AudioManager';
 import { PlayerAdSdk } from '../PlayerAdSdk';
 import { Macro, dingColor } from './Macro';
@@ -266,6 +266,14 @@ export class GameUI extends Component {
      * @param onComplete 完成回调
      */
     private moveCarToSlot(carNode: Node, targetPos: Vec3, carColor: dingColor, onComplete?: Function): void {
+        let cloud = this.CarNode1.children[0];
+        if (cloud) {
+            cloud.active = true;
+            const animation = cloud.getComponent(Animation);
+            if (animation) {
+                animation.play('carcloud');
+            }
+        }
         tween(carNode)
             .to(0.2, { position: new Vec3(carNode.position.x, targetPos.y - Macro.PARKING_ROAD_GAP_Y, 0) })
             .call(() => {
@@ -282,6 +290,7 @@ export class GameUI extends Component {
             })
             .to(0.2, { position: new Vec3(targetPos.x, Macro.PARKING_ROAD_BOTTOM_Y, 0) })
             .call(() => {
+                cloud.active = false
                 carNode.getComponent(sp.Skeleton).setAnimation(0, 'up_middle_static', true);
                 carNode.setScale(1, 1, 1);
             })
@@ -309,18 +318,30 @@ export class GameUI extends Component {
      * @param onComplete 完成回调
      */
     private moveCarToSlotFromRight(carNode: Node, targetPos: Vec3, carColor: dingColor, onComplete?: Function): void {
+        let cloud = this.CarNode2.children[0];
+        if (cloud) {
+            cloud.active = true;
+            const animation = cloud.getComponent(Animation);
+            if (animation) {
+                animation.play('carcloud');
+            }
+        }
         tween(carNode)
             .to(0.2, { position: new Vec3(Macro.PARKING_ROAD_RIGHT_X, carNode.position.y, 0) })
             .call(() => {
                 carNode.getComponent(sp.Skeleton).setAnimation(0, 'up_middle_static', true);
+                carNode.setScale(1, 1, 1);
+                cloud.active = false;
             })
-            .to(0.2, { position: new Vec3(Macro.PARKING_ROAD_RIGHT_X, targetPos.y - Macro.PARKING_ROAD_GAP_Y, 0) })
+            .to(0.15, { position: new Vec3(Macro.PARKING_ROAD_RIGHT_X, targetPos.y - Macro.PARKING_ROAD_GAP_Y, 0) })
             .call(() => {
                 carNode.getComponent(sp.Skeleton).setAnimation(0, 'left_middle_static', true);
+                cloud.active = true;
             })
             .to(0.32, { position: new Vec3(Macro.PARKING_ROAD_LEFT_X, targetPos.y - Macro.PARKING_ROAD_GAP_Y, 0) })
             .call(() => {
                 carNode.getComponent(sp.Skeleton).setAnimation(0, 'up_middle_static', true);
+                cloud.active = false
             })
             .to(0.12, { position: new Vec3(Macro.PARKING_ROAD_LEFT_X, Macro.PARKING_ROAD_BOTTOM_Y, 0) })
             .call(() => {
@@ -329,6 +350,7 @@ export class GameUI extends Component {
             })
             .to(0.2, { position: new Vec3(targetPos.x, Macro.PARKING_ROAD_BOTTOM_Y, 0) })
             .call(() => {
+                cloud.active = false
                 carNode.getComponent(sp.Skeleton).setAnimation(0, 'up_middle_static', true);
                 carNode.setScale(1, 1, 1);
             })
