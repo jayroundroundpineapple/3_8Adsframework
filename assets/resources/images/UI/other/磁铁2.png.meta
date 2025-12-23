@@ -2,7 +2,7 @@
   "ver": "1.0.26",
   "importer": "image",
   "imported": true,
-  "uuid": "ea9b6bce-0329-49ad-a2ce-14ca2e8b2821",
+  "uuid": "6e1b9581-e016-4f15-bf6f-56071ee6d0e0",
   "files": [
     ".json",
     ".png"
@@ -10,8 +10,8 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "ea9b6bce-0329-49ad-a2ce-14ca2e8b2821@6c48a",
-      "displayName": "磁铁",
+      "uuid": "6e1b9581-e016-4f15-bf6f-56071ee6d0e0@6c48a",
+      "displayName": "磁铁2",
       "id": "6c48a",
       "name": "texture",
       "userData": {
@@ -22,7 +22,7 @@
         "mipfilter": "none",
         "anisotropy": 0,
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "ea9b6bce-0329-49ad-a2ce-14ca2e8b2821",
+        "imageUuidOrDatabaseUri": "6e1b9581-e016-4f15-bf6f-56071ee6d0e0",
         "visible": false
       },
       "ver": "1.0.22",
@@ -34,8 +34,8 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "ea9b6bce-0329-49ad-a2ce-14ca2e8b2821@f9941",
-      "displayName": "磁铁",
+      "uuid": "6e1b9581-e016-4f15-bf6f-56071ee6d0e0@f9941",
+      "displayName": "磁铁2",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
@@ -114,7 +114,7 @@
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "ea9b6bce-0329-49ad-a2ce-14ca2e8b2821@6c48a",
+        "imageUuidOrDatabaseUri": "6e1b9581-e016-4f15-bf6f-56071ee6d0e0@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.12",
@@ -129,6 +129,6 @@
     "hasAlpha": true,
     "type": "sprite-frame",
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "ea9b6bce-0329-49ad-a2ce-14ca2e8b2821@f9941"
+    "redirect": "6e1b9581-e016-4f15-bf6f-56071ee6d0e0@f9941"
   }
 }

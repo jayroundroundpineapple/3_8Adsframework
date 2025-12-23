@@ -1,6 +1,7 @@
 import { _decorator, Component, Node, Vec3, Prefab, instantiate, tween, UITransform, sp } from 'cc';
 import { Macro, CarType, dingColor } from './Macro';
 import { GameUI } from './GameUI';
+import RESSpriteFrame from '../RESSpriteFrame';
 const { ccclass, property } = _decorator;
 
 /**
@@ -85,8 +86,6 @@ export class ParkingCarItem extends Component {
                 }
             }
         }
-
-        console.log(`[ParkingCarItem] 车辆 ${this.node.name} 初始化完成，已装 ${this.getInstalledNailCount()} 个钉子`);
     }
 
     /**
@@ -144,20 +143,17 @@ export class ParkingCarItem extends Component {
     public installNail(nailNode: Node): boolean {
         // 检查是否还有空位
         if (this.currentNailIndex >= this.getMaxNails()) {
-            console.warn(`[ParkingCarItem] 车辆 ${this.node.name} 钉子已满，无法安装`);
             return false;
         }
 
         // 检查钉子颜色是否匹配
         const nailName = nailNode.name;
         if (nailName !== '0' && nailName !== '1' && nailName !== '2') {
-            console.warn(`[ParkingCarItem] 无效的钉子节点`);
             return false;
         }
 
         const nailColor = parseInt(nailName) as dingColor;
         if (nailColor !== this.carColor) {
-            console.warn(`[ParkingCarItem] 钉子颜色 ${nailColor} 与车辆颜色 ${this.carColor} 不匹配`);
             return false;
         }
 
@@ -173,18 +169,17 @@ export class ParkingCarItem extends Component {
         nailNode.setParent(this.node);
         nowPos = this.node.getComponent(UITransform).convertToNodeSpaceAR(nowPos);
         nailNode.setPosition(nowPos);
-        
+        let boderY = this.carColor === dingColor.GREEN ? 50 : 2;
         tween(nailNode)
         .delay(0.1)
-        .to(0.4, { scale: new Vec3(1.1, 1.1, 1) ,position: new Vec3(nowPos.x + 5, nowPos.y + 2, 0)}, { easing: 'quadOut' })
-        .delay(0.2)
+        .to(0.4, { scale: new Vec3(1.1, 1.1, 1) ,position: new Vec3(nowPos.x + 3, nowPos.y + 80, 0)}, { easing: 'quadOut' })
+        .delay(0.3)
         .to(0.4, { position: targetPos ,scale: new Vec3(Macro.CAR_DI_SCALE, Macro.CAR_DI_SCALE, 1) }, { easing: 'quadOut' })
         .call(()=>{
             nailNode.setScale(Macro.CAR_DI_SCALE, Macro.CAR_DI_SCALE, 1);
             
             // 钉子动画完成后，如果这是最后一个钉子（车辆已装满），则放大车辆
             if (willBeFull) {
-                console.log('jay安装满了,开始移开')
                 this.moveOutCar();
             }
         })
@@ -200,6 +195,7 @@ export class ParkingCarItem extends Component {
      * 车辆装满钉子后离开停车场
      */
     private moveOutCar(): void {
+        GameUI.instance.GameAudioSource.playOneShot(RESSpriteFrame.instance.goodAudioClip, 1);
         let posX = this.node.position.x;
         this.node.eulerAngles = new Vec3(0, 0, Macro.CAR_LEAVE_ANGLE1);
         let roadBottomY = this.isSelfSet ? Macro.CUSTOM_PARKING_ROAD_BOTTOM_Y : Macro.PARKING_ROAD_BOTTOM_Y;
@@ -210,7 +206,7 @@ export class ParkingCarItem extends Component {
             .to(0.1, {eulerAngles: new Vec3(0, 0, Macro.CAR_LEAVE_ANGLE2)})
             .by(0.5, { position: new Vec3(750, 0, 0) })
             .call(() => {
-                console.log(`[ParkingCarItem] 车辆 ${this.node.name} 已装满钉子并放大`);
+                
             })
             .start();
     }

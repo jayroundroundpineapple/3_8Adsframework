@@ -23,11 +23,11 @@ export class Macro {
     /**停车场最左边的X坐标 */
     public static readonly PARKING_ROAD_LEFT_X = -300;
     /**停车场最右边的X坐标 */
-    public static readonly PARKING_ROAD_RIGHT_X = -300;
+    public static readonly PARKING_ROAD_RIGHT_X = 310;
     /**停车位下边跑道Y */
     public static readonly PARKING_ROAD_BOTTOM_Y = 560;
      /**自定义停车位下边跑道Y */
-     public static readonly CUSTOM_PARKING_ROAD_BOTTOM_Y = -70;
+     public static readonly CUSTOM_PARKING_ROAD_BOTTOM_Y = -65;
     /**移动车位角度 */
     public static readonly PARKING_ROAD_ANGLE = 25;
      /**停车spine车位角度 */

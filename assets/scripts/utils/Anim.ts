@@ -57,7 +57,6 @@ export default class Anim {
     public ShowFlyAni(prefab: Prefab, parent, len: number, endPoint: Vec2,comFun: Function = null, thisObj: any = null,MoneyChangeArr?:MoneyChange[],Money?:number,moneyCb?:Function,originPos?:Vec2) {
         // 创建一个新的状态对象
         const state = new FlyAniState(len, comFun, thisObj);
-
         let halfX: number = 0;
         let halfY: number = 0;
         if (originPos != null) {
@@ -67,14 +66,14 @@ export default class Anim {
         let X, Y, showMS, delay;
 
         for (var i = 0; i < len; i++) {
-            var img: Node = instantiate(prefab);
+            let img: Node = instantiate(prefab);
             let sprite: Sprite = img.getComponent(Sprite);
-            img.setParent(parent);
             
+            img.setParent(parent);
+            console.log('imgIsValid',img.isValid,'parentIsValid',parent.isValid);
             // 设置透明度
             let uiOpacity = img.getComponent(UIOpacity) || img.addComponent(UIOpacity);
             uiOpacity.opacity = 255;
-            
             // 设置位置
             img.setPosition(halfX, halfY, 0);
 
@@ -86,13 +85,6 @@ export default class Anim {
                 scaleValue = Utils.limit(0.7, 0.9) * 0.3;
             }
             img.setScale(scaleValue, scaleValue, 1);
-
-            // //加载标题
-            // loader.loadRes(`common/moneyIcon`, SpriteFrame, function (err, spriteFrame) {
-            //     // loader.loadRes(`common/usdIcon${Utils.limitInteger(0, 3)}`, SpriteFrame, function (err, spriteFrame) {
-            //     if (err) return;
-            //     sprite.spriteFrame = spriteFrame;
-            // });
             delay = 0.08 + i * 0.02;
             showMS = Utils.getRadian(Utils.limit(0, 18) * 20);
             X = halfX + Math.cos(showMS) * Utils.limit(8, 25) * 10;
@@ -109,25 +101,48 @@ export default class Anim {
                 .delay(0.05)
                 .to(0.3, { position: new Vec3(finalX, finalY, 0) })
                 .call(() => {
+                    // 检查节点和父节点是否有效
+                    if (!img || !img.isValid) {
+                        console.warn('[Anim] 节点无效，可能已被销毁', {
+                            img: img,
+                            imgIsValid: img ? img.isValid : 'img is null',
+                            parent: parent,
+                            parentIsValid: parent ? parent.isValid : 'parent is null'
+                        });
+                        return;
+                    }
+                    
+                    // 检查父节点是否有效（如果父节点被销毁，子节点也会无效）
+                    if (!parent || !parent.isValid) {
+                        console.warn('[Anim] 父节点无效，节点将被销毁', {
+                            parent: parent,
+                            parentIsValid: parent ? parent.isValid : 'parent is null',
+                            imgIsValid: img.isValid
+                        });
+                        if (img.isValid) {
+                            img.destroy();
+                        }
+                        return;
+                    }
+                    
                     let uiOpacity = img.getComponent(UIOpacity);
                     if (uiOpacity) {
+                        // 淡出动画
                         tween(uiOpacity)
                             .to(0.2, { opacity: 0 })
                             .call(() => {
+                                // 再次检查节点是否有效
+                                if (!img || !img.isValid) {
+                                    return;
+                                }
+                                
+                                // 处理金钱变化
                                 if (state.moneyChangeFlag && MoneyChangeArr != null) {
-                                    // 播放音频
-                                    if (RESSpriteFrame.instance && RESSpriteFrame.instance.numberAddAudioClip) {
-                                        const audioNode = new Node('TempAudio');
-                                        audioNode.setParent(parent);
-                                        const audioSource = audioNode.addComponent(AudioSource);
-                                        audioSource.clip = RESSpriteFrame.instance.numberAddAudioClip;
-                                        audioSource.play();
-                                        state.musicID = audioNode;
-                                    }
                                     state.moneyChangeFlag = false;
                                     if (Money != null) {
                                         [...MoneyChangeArr].forEach((item, index) => {
-                                            item.play(LanguageManager.instance.formatUnit(Money), 0.8, () => {
+                                            const moneyValue = typeof Money === 'number' ? Money : Number(Money) || 0;
+                                            item.play(moneyValue, 0.8, () => {
                                                 if (index == [...MoneyChangeArr].length-1 ) {
                                                     if (moneyCb != null) moneyCb();
                                                 }
@@ -135,24 +150,18 @@ export default class Anim {
                                         });
                                     }
                                 }
+                                // 销毁节点
                                 this.onEffectComplete(img, state);
                             })
                             .start();
                     } else {
+                        // 如果没有 UIOpacity 组件，直接处理金钱变化并销毁
                         if (state.moneyChangeFlag && MoneyChangeArr != null) {
-                            // 播放音频
-                            if (RESSpriteFrame.instance && RESSpriteFrame.instance.numberAddAudioClip) {
-                                const audioNode = new Node('TempAudio');
-                                audioNode.setParent(parent);
-                                const audioSource = audioNode.addComponent(AudioSource);
-                                audioSource.clip = RESSpriteFrame.instance.numberAddAudioClip;
-                                audioSource.play();
-                                state.musicID = audioNode;
-                            }
                             state.moneyChangeFlag = false;
                             if (Money != null) {
                                 [...MoneyChangeArr].forEach((item, index) => {
-                                    item.play(LanguageManager.instance.formatUnit(Money), 0.8, () => {
+                                    const moneyValue = typeof Money === 'number' ? Money : Number(Money) || 0;
+                                    item.play(moneyValue, 0.8, () => {
                                         if (index == [...MoneyChangeArr].length-1 ) {
                                             if (moneyCb != null) moneyCb();
                                         }
@@ -160,6 +169,7 @@ export default class Anim {
                                 });
                             }
                         }
+                        // 销毁节点
                         this.onEffectComplete(img, state);
                     }
                 })
@@ -168,38 +178,11 @@ export default class Anim {
     }
 
     private onEffectComplete(img: Node, state: FlyAniState): void {
-        if (img && img.parent) {
+        // 检查节点是否有效，只要节点存在就销毁
+        if (img && img.isValid) {
             img.destroy();
+            console.log('销毁节点',img.isValid);
             state.count++;
-            
-            // 播放音效
-            const audioManager = AudioManager.getInstance();
-            if (audioManager) {
-                audioManager.playSound('addCoin', 1);
-            } else {
-                // 如果 AudioManager 未初始化，直接加载并播放
-                resources.load(`audio/addCoin`, AudioClip, (err, audioClip) => {
-                    if (err) {
-                        console.error('[Anim] 加载音效失败:', err);
-                        return;
-                    }
-                    // 创建一个临时节点播放音频
-                    const audioNode = new Node('TempAudio');
-                    audioNode.setParent(img.parent);
-                    const audioSource = audioNode.addComponent(AudioSource);
-                    audioSource.clip = audioClip;
-                    audioSource.loop = false;
-                    audioSource.play();
-                    // 播放完成后销毁节点
-                    const duration = audioClip.getDuration() || 1;
-                    setTimeout(() => {
-                        if (audioNode && audioNode.isValid) {
-                            audioNode.destroy();
-                        }
-                    }, duration * 1000);
-                });
-            }
-
             if (state.count == state.staLen) {
                 // 停止音频
                 if (state.musicID && state.musicID.isValid) {
