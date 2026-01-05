@@ -1804,6 +1804,25 @@
     "_enabled": true,
     "__prefab": null,
     "resultNode": null,
+    "lineArtSprite": {
+      "__id__": 42
+    },
+    "targetColor": {
+      "__type__": "cc.Color",
+      "r": 197,
+      "g": 12,
+      "b": 12,
+      "a": 255
+    },
+    "colorPalette": [
+      {
+        "__type__": "cc.Color",
+        "r": 195,
+        "g": 26,
+        "b": 46,
+        "a": 255
+      }
+    ],
     "_id": "8f1aM4EMRM/ZKgx7Fz1Skq"
   },
   {
