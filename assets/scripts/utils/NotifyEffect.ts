@@ -16,23 +16,6 @@ export default class NotifyEffect {
         setTimeout(() => {
             if (canPlayMusic && audio) {
                 const audioManager = AudioManager.getInstance();
-                if (audioManager) {
-                    // 如果 AudioManager 已初始化，使用它播放
-                    audioManager.playSound('', 1);
-                } else {
-                    // 否则创建临时 AudioSource
-                    const audioNode = new Node('TempAudio');
-                    audioNode.setParent(node.parent || node);
-                    const audioSource = audioNode.addComponent(AudioSource);
-                    audioSource.clip = audio;
-                    audioSource.loop = false;
-                    audioSource.play();
-                    setTimeout(() => {
-                        if (audioNode && audioNode.isValid) {
-                            audioNode.destroy();
-                        }
-                    }, (audio.getDuration() || 1) * 1000);
-                }
             }
             node.setScale(0, 0, 1);
             node.active = true;

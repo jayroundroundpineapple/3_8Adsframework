@@ -1,17 +1,33 @@
-import { _decorator, Component, Node, AudioSource, EventTouch, tween, Vec2, Vec3, UITransform, sp, Prefab, Label, Mask, UIOpacity, utils, Widget, director, Animation, Sprite, Color, Texture2D, ImageAsset, SpriteFrame, Graphics, instantiate, NodePool, Tween } from 'cc';
+import { _decorator, Component, Node, AudioSource, EventTouch, tween, Vec2, Vec3, UITransform, sp, Prefab, Label, Mask, UIOpacity, utils, Widget, director, Animation, Sprite, Color, Texture2D, ImageAsset, SpriteFrame, Graphics, instantiate, NodePool, Tween, AudioClip, random } from 'cc';
 import { AudioManager } from '../utils/AudioManager';
 import { PlayerAdSdk } from '../PlayerAdSdk';
 import RESSpriteFrame from '../RESSpriteFrame';
+import { Utils } from '../utils/Utils';
+import NotifyEffect from '../utils/NotifyEffect';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameUI')
 export class GameUI extends Component {
     @property(Node)
-    private guideFinger:Node = null;
+    private rocketFinger: Node = null
+    @property(Prefab)
+    private rocketPre: Prefab = null;
     @property(Node)
-    private resultNode:Node = null;
+    private propNode: Node = null;
     @property(Node)
-    private maskNode:Node = null;
+    private gameMask: Node = null;
+    @property(Node)
+    private spinUI: Node = null;
+    @property(Node)
+    private spinBtn: Node = null;
+    @property(Node)
+    private spinNode: Node = null;
+    @property(Node)
+    private guideFinger: Node = null;
+    @property(Node)
+    private resultNode: Node = null;
+    @property(Node)
+    private maskNode: Node = null;
     @property(SpriteFrame)
     private bulletSpriteArray: SpriteFrame[] = [];
     @property(Node)
@@ -23,25 +39,25 @@ export class GameUI extends Component {
     @property(Prefab)
     private bulletPrefab: Prefab = null;
     @property(Sprite)
-    pixelSprite: Sprite = null; 
+    pixelSprite: Sprite = null;
     @property(Sprite)
     private pixelSprite1: Sprite = null;
     @property(Prefab)
     private graphicsPrefab: Prefab = null;
 
-    baseColors: Color[] = [new Color(41, 134, 51), new Color(67, 227, 7)]; 
+    baseColors: Color[] = [new Color(41, 134, 51), new Color(67, 227, 7)];
 
     // 存储每个sprite的数据
     private spriteDataList: Array<{
         sprite: Sprite;
         graphicsNode: Node;
         graphics: Graphics;
-        pixelData: Array<{x: number, y: number, color: Color}>;
+        pixelData: Array<{ x: number, y: number, color: Color }>;
         rows: number;
         cols: number;
         baseColor: Color;
     }> = [];
-    totalSpriteLbArr:Label[] = [];
+    totalSpriteLbArr: Label[] = [];
     private currentSpriteIndex: number = 0; // 当前要填充的sprite索引
     private currentRow: number = 0; // 当前渲染到的行（从底部开始）
     private isRendering: boolean = false; // 是否正在渲染
@@ -54,48 +70,92 @@ export class GameUI extends Component {
     private audioManager: AudioManager = null; // 音频管理器
     private audioInitialized: boolean = false; // 音频是否已初始化
     private bulletPool: NodePool = null; // 子弹池
-    protected onLoad(): void {  
+    protected onLoad(): void {
         PlayerAdSdk.init();
         this.initAllPixelSprites();
         this.setupAudioNodes();
         this.setupGlobalClick();
     }
+    initSpinUI() {
+        this.spinUI.active = true;
+        this.spinBtn.active = false
+        this.spinNode.parent.scale = new Vec3(0, 0, 0);
+        tween(this.spinNode.parent)
+            .to(0.3, { scale: new Vec3(1, 1, 1) })
+            .call(() => {
+                this.spinBtn.active = true;
+                Utils.setScale(this.spinBtn, 1.1, 0.3, true);
+                this.spinBtn.on(Node.EventType.TOUCH_START, this.onSpinBtnClick, this);
+            })
+            .start()
+    }
+    onSpinBtnClick() {
+        if (!this.audioInitialized) {
+            this.initAudio();
+        }
+        Tween.stopAllByTarget(this.spinBtn);
+        Utils.setScale(this.spinBtn, .9, 0.15, false, () => {
+            this.spinBtn.active = false;
+            AudioManager.getInstance().playSound('SpinWheel');
+        });
+        tween(this.spinNode)
+            .to(3, { angle: 360 * 8 }, { easing: 'quadInOut' })
+            .call(() => {
+                let gift = this.spinNode.getChildByName("targetGift")
+                Utils.setScale(gift, 1.2, 0.2, false, () => {
+                    this.gameMask.scale = new Vec3(0, 0, 1);
+                    this.gameMask.active = true
+                    tween(this.gameMask)
+                        .to(0.3, { scale: new Vec3(1, 1, 1) })
+                        .call(() => {
+                            this.setFirstGuide()
+                            Utils.refreshScreen();
+                        })
+                        .start()
+                })
+                AudioManager.getInstance().playSound('SpinWheel_Prize');
+            })
+            .start()
+    }
     start() {
         (window as any).gameUI = this;
-        this.resultNode.active = this.maskNode.active = false;
+        this.gameMask.active = this.resultNode.active = this.maskNode.active = false;
+        this.initSpinUI();
         this.initBulletPool();
-        this.guideFinger.setPosition(0,-100,0);
-        tween(this.guideFinger)
-        .repeatForever(
-            tween()
-            .to(0.3, { position: new Vec3(-60,66,0) })
-            .delay(0.1)
-            .to(0.15,{scale: new Vec3(.9,.9,1)})
-            .to(0.15,{scale: new Vec3(1,1,1)})
-            .delay(0.1)
-            .to(0.3, { position: new Vec3(0,-100,0) })
-            .delay(0.2)
-            .start()
-        ).start()
     }
-    setGuideAnim(){
+    setFirstGuide() {
+        this.guideFinger.setPosition(0, -100, 0);
+        tween(this.guideFinger)
+            .repeatForever(
+                tween()
+                    .to(0.3, { position: new Vec3(-60, 66, 0) })
+                    .delay(0.1)
+                    .to(0.15, { scale: new Vec3(.9, .9, 1) })
+                    .to(0.15, { scale: new Vec3(1, 1, 1) })
+                    .delay(0.1)
+                    .to(0.3, { position: new Vec3(0, -100, 0) })
+                    .delay(0.2)
+                    .start()
+            ).start()
+    }
+    setGuideAnim() {
         // 停止guideFinger节点上的所有tween动画
         Tween.stopAllByTarget(this.guideFinger);
-        
-        this.guideFinger.setPosition(150,-50,0);
+
+        this.guideFinger.setPosition(150, -50, 0);
         this.guideFinger.active = true;
         tween(this.guideFinger)
-        .repeatForever(
-            tween()
-            .to(0.3, { position: new Vec3(65,60,0) })
-            .delay(0.1)
-            .to(0.15,{scale: new Vec3(.9,.9,1)})
-            .to(0.15,{scale: new Vec3(1,1,1)})
-            .delay(0.1)
-            .to(0.3, { position: new Vec3(150,-50,0) })
-            .delay(0.2)
-            .start()
-        ).start()
+            .repeatForever(
+                tween()
+                    .to(0.3, { position: new Vec3(65, 60, 0) })
+                    .delay(0.1)
+                    .to(0.15, { scale: new Vec3(.9, .9, 1) })
+                    .to(0.15, { scale: new Vec3(1, 1, 1) })
+                    .delay(0.1)
+                    .to(0.3, { position: new Vec3(150, -50, 0) })
+                    .delay(0.2)
+                    .start()
+            ).start()
     }
     initBulletPool(): void {
         this.bulletPool = new NodePool();
@@ -119,43 +179,70 @@ export class GameUI extends Component {
         } else {
             bulletNode = instantiate(this.bulletPrefab);
         }
-       
-        let currentShootNode = this.currentSpriteIndex == 0 ? this.shootNode0 : this.shootNode1;
-        bulletNode.getComponent(Sprite).spriteFrame = this.bulletSpriteArray[this.currentSpriteIndex];
-        bulletNode.setParent(currentShootNode);
-        if(this.currentSpriteIndex == 1) {
-            bulletNode.setScale(-1,1,1)
+        
+        // 确保子弹节点状态正确初始化
+        bulletNode.active = true;
+        bulletNode.setScale(1, 1, 1);
+        if (bulletNode.children.length > 0) {
+            bulletNode.children[0].active = true; 
         }
-        bulletNode.setPosition(0, 60, 0);
+        if (bulletNode.children.length > 1) {
+            bulletNode.children[1].active = true;
+            bulletNode.children[1].scale = new Vec3(.3, .3, 1); 
+            const animComponent = bulletNode.children[1].getComponent(Animation);
+            if (animComponent) {
+                animComponent.stop();
+                animComponent.off(Animation.EventType.FINISHED);
+            }
+        }
+        let shootBox = this.shootNode0.parent;
+        bulletNode.children[0].getComponent(Sprite).spriteFrame = this.bulletSpriteArray[this.currentSpriteIndex];
+        bulletNode.setParent(shootBox);
+        if (this.currentSpriteIndex == 1) {
+            bulletNode.setScale(-1, 1, 1)
+        }
+        let nowPos = this.targetNodePos.parent.getComponent(UITransform).convertToWorldSpaceAR(this.targetNodePos.position.clone());
+        bulletNode.parent = shootBox;
+        nowPos = shootBox.getComponent(UITransform).convertToNodeSpaceAR(nowPos);
+        bulletNode.setPosition(nowPos);
         bulletNode.active = true;
 
         const spriteNode = this.spriteDataList[this.currentSpriteIndex].sprite.node;
         let targetPos = spriteNode.position.clone();
-       
+
         const spriteParentTransform = spriteNode.parent.getComponent(UITransform);
         if (spriteParentTransform) {
             targetPos = spriteParentTransform.convertToWorldSpaceAR(targetPos);
         }
         let shootNode = this.currentSpriteIndex == 0 ? this.shootNode0 : this.shootNode1;
-        const gunTransform = shootNode.getComponent(UITransform);
-        if (gunTransform) {
-            targetPos = gunTransform.convertToNodeSpaceAR(targetPos);
+        const shootBoxTransform = shootBox.getComponent(UITransform);
+        if (shootBoxTransform) {
+            targetPos = shootBoxTransform.convertToNodeSpaceAR(targetPos);
         }
         let angle = this.currentSpriteIndex == 0 ? -12 : 0;
         let animName = this.currentSpriteIndex == 0 ? 'shoot0' : 'shoot1';
         tween(shootNode)
-        .to(0.15, { angle: angle })
-        .to(0.1, { angle: 0 })
-        .start();
+            .to(0.15, { angle: angle })
+            .to(0.1, { angle: 0 })
+            .start();
         shootNode.getComponent(Animation).play(animName);
         tween(bulletNode).stop();
         AudioManager.getInstance().playSound('click');
         tween(bulletNode)
             .to(0.08, { position: targetPos })
             .call(() => {
-                // 子弹到达后，渲染当前行
+                bulletNode.children[0].active = false;
+                let animName = this.currentSpriteIndex == 0 ? 'boom1' : 'boom0';
+                let ranDomNum = Utils.getRandomInt(1, 6);
+                if (ranDomNum >= 4) {
+                    bulletNode.children[1].getComponent(Animation).play(animName);
+                    bulletNode.children[1].getComponent(Animation).on(Animation.EventType.FINISHED, () => {
+                        this.recycleBullet(bulletNode);
+                    }, this);
+                } else {
+                    this.recycleBullet(bulletNode);
+                }
                 this.renderCurrentRow();
-                this.recycleBullet(bulletNode);
                 this.shootCount++;
                 this.shootNextRow();
             })
@@ -169,10 +256,34 @@ export class GameUI extends Component {
         if (!bulletNode || !bulletNode.isValid) {
             return;
         }
+        
         // 停止所有动画
         tween(bulletNode).stop();
+        
+        // 停止子节点的动画
+        if (bulletNode.children.length > 1) {
+            const animComponent = bulletNode.children[1].getComponent(Animation);
+            if (animComponent) {
+                animComponent.stop();
+                animComponent.off(Animation.EventType.FINISHED);
+            }
+        }
+        
+        // 重置子弹状态
         bulletNode.active = false;
         bulletNode.setPosition(0, 0, 0);
+        bulletNode.setScale(1, 1, 1);
+        
+        // 重置子节点状态
+        if (bulletNode.children.length > 0) {
+            bulletNode.children[0].active = true; // 子弹本体
+        }
+        if (bulletNode.children.length > 1) {
+            bulletNode.children[1].active = true; // 爆炸效果
+            bulletNode.children[1].scale = new Vec3(.3, .3, 1); // 重置爆炸效果大小
+        }
+        
+        // 回收到对象池
         if (this.bulletPool) {
             this.bulletPool.put(bulletNode);
         } else {
@@ -258,19 +369,16 @@ export class GameUI extends Component {
         graphicsTransform.setAnchorPoint(0.5, 0.5);
         graphicsNode.setPosition(0, 0, 0);
 
-        // 清除之前的绘制
         graphics.clear();
 
-        // 计算需要绘制的像素块数量
         const cols = Math.ceil(width / this.pixelSize);
         const rows = Math.ceil(height / this.pixelSize);
 
-        // 计算起始位置
         const startX = -width / 2;
         const startY = height / 2 - this.pixelSize;
 
         // 预生成所有像素数据
-        const pixelData: Array<{x: number, y: number, color: Color}> = [];
+        const pixelData: Array<{ x: number, y: number, color: Color }> = [];
         let opacityArr = [164, 195, 255];
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < cols; col++) {
@@ -285,7 +393,6 @@ export class GameUI extends Component {
             }
         }
 
-        // 保存sprite数据
         this.spriteDataList.push({
             sprite: sprite,
             graphicsNode: graphicsNode,
@@ -296,8 +403,7 @@ export class GameUI extends Component {
             baseColor: baseColor
         });
         let spirteNode = this.spriteDataList[index].sprite.node;
-        
-        // 找到spirteNode的同层级节点中名字为"abbc"的节点
+
         if (spirteNode.parent) {
             const siblings = spirteNode.parent.children;
             for (let i = 0; i < siblings.length; i++) {
@@ -312,7 +418,7 @@ export class GameUI extends Component {
                 }
             }
         }
-        
+
         let node = index == 0 ? this.shootNode0 : this.shootNode1;
         node.getChildByName('bolletNum').getComponent(Label).string = `${this.spriteDataList[index].rows}`;
     }
@@ -321,12 +427,11 @@ export class GameUI extends Component {
      * gunNode点击事件处理
      */
     private onGunNodeClick(event: EventTouch): void {
-        // 停止guideFinger节点上的所有tween动画
+        AudioManager.getInstance().playSound('click');
         Tween.stopAllByTarget(this.guideFinger);
         this.guideFinger.active = false;
         this.shootNode0.off(Node.EventType.TOUCH_END, this.onGunNodeClick, this);
         this.shootNode1.off(Node.EventType.TOUCH_END, this.onGunNodeClick, this);
-        // 首次点击时初始化音频
         if (!this.audioInitialized) {
             this.initAudio();
         }
@@ -338,7 +443,7 @@ export class GameUI extends Component {
 
         // 检查是否还有未填充的sprite
         if (this.currentSpriteIndex >= this.spriteDataList.length) {
-            console.log('[GameUI] 所有sprite都已填充完成');
+            console.log('所有sprite都已填充完成');
             return;
         }
         this.startShootSequence();
@@ -410,13 +515,10 @@ export class GameUI extends Component {
 
         // 检查是否已经射击完所有行
         if (this.shootCount >= currentData.rows) {
-            // 当前sprite填充完成
-            console.log(`当前sprite填充完成,打了${this.shootCount}枪`);
             this.onSpriteFilled();
             return;
         }
 
-        // 发射子弹
         this.shootBullet();
     }
 
@@ -451,7 +553,7 @@ export class GameUI extends Component {
         let node = this.currentSpriteIndex == 0 ? this.shootNode0 : this.shootNode1;
         node.getChildByName('bolletNum').getComponent(Label).string = `${this.currentRow}`;
         this.currentRow--;
-        if(this.currentRow < 0) {
+        if (this.currentRow < 0) {
             this.totalSpriteLbArr[this.currentSpriteIndex].node.active = false;
             node.getChildByName('bolletNum').getComponent(Label).node.active = false;
         }
@@ -463,35 +565,88 @@ export class GameUI extends Component {
     private onSpriteFilled(): void {
         this.isShooting = false;
         this.isRendering = false;
-           
+
         //shootNode移走动画
         let shootNode = this.currentSpriteIndex == 0 ? this.shootNode0 : this.shootNode1;
         shootNode.getComponent(Animation).pause();
         tween(shootNode).stop();
         tween(shootNode)
-        .delay(0.1)
-        .parallel(
-            tween().by(0.35, { position: new Vec3(-300, 100, 0) }),
-            tween()
-            .to(0.25, { scale: new Vec3(1.2, 1.2, 1) })
-            .to(0.1, { scale: new Vec3(1, 1, 1) })
-        )
-        .start();
+            .delay(0.1)
+            .parallel(
+                tween().by(0.35, { position: new Vec3(-300, 100, 0) }),
+                tween()
+                    .to(0.25, { scale: new Vec3(1.2, 1.2, 1) })
+                    .to(0.1, { scale: new Vec3(1, 1, 1) })
+            )
+            .start();
         this.currentSpriteIndex++;
-        if(this.currentSpriteIndex == 1) {
-            this.shootNode1.on(Node.EventType.TOUCH_END, this.onGunNodeClick, this);
-            this.setGuideAnim();
+        if (this.currentSpriteIndex == 1) {
+            //提示点击火箭改色
+            this.setRocketAnim();
         }
-        // 如果还有下一个sprite，等待下次点击
-        if (this.currentSpriteIndex < this.spriteDataList.length) {
-            console.log(`[GameUI] 准备填充下一个 sprite ${this.currentSpriteIndex}，点击gunNode开始`);
-        } else {
-            console.log('[GameUI] 所有sprite都已填充完成');
+        if(this.currentSpriteIndex == this.spriteDataList.length){
+            setTimeout(() => {
+                this.showResultUI();
+            }, 300);
         }
+        // // 如果还有下一个sprite，等待下次点击
+        // if (this.currentSpriteIndex < this.spriteDataList.length) {
+        //     console.log(`准备填充下一个 sprite ${this.currentSpriteIndex}，点击gunNode开始`);
+        // } else {
+        //     console.log('所有sprite都已填充完成');
+        // }
     }
-    
-    onTouchEnd(event: EventTouch) {
-        
+    showResultUI(){
+        this.maskNode.active = true
+        NotifyEffect.NormalShowUI(this.resultNode,RESSpriteFrame.instance.comeOutAudioClip,0,true,()=>{
+            AudioManager.getInstance().playSound('Win_001');
+        })
+    }
+    setRocketAnim() {
+        this.propNode.on(Node.EventType.TOUCH_END, this.onRocketClick, this);
+        this.rocketFinger.active = true;
+        this.rocketFinger.setPosition(-25, 440, 0)
+        tween(this.rocketFinger)
+            .repeatForever(
+                tween()
+                    .to(0.3, { position: new Vec3(-80, 325, 0) })
+                    .delay(0.1)
+                    .to(0.15, { scale: new Vec3(-.9, .9, 1) })
+                    .to(0.15, { scale: new Vec3(-1, 1, 1) })
+                    .delay(0.1)
+                    .to(0.3, { position: new Vec3(-25, 440, 0) })
+                    .delay(0.2)
+                    .start()
+            ).start()
+    }
+    /**改色 */
+    onRocketClick() {
+        this.rocketFinger.active = false;
+        Tween.stopAllByTarget(this.propNode);
+        AudioManager.getInstance().playSound('click');
+        this.propNode.off(Node.EventType.TOUCH_END, this.onRocketClick, this);
+        this.propNode.getChildByName("btn").children[0].getComponent(Label).string = 'x0';
+        tween(this.propNode).stop();
+        Utils.setScale(this.propNode, 1.1, 0.2, false, () => {
+            let rocket = instantiate(this.rocketPre);
+            rocket.setParent(this.propNode);
+            rocket.setScale(.8, .8, 1);
+            rocket.setPosition(0, 50, 0);
+            rocket.active = true;
+            let spriteNode = this.spriteDataList[this.currentSpriteIndex].sprite.node;
+            let targetPos = spriteNode.parent.getComponent(UITransform).convertToWorldSpaceAR(spriteNode.position.clone());
+            targetPos = this.propNode.getComponent(UITransform).convertToNodeSpaceAR(targetPos);
+            tween(rocket)
+                .to(0.3, { position: targetPos })
+                .delay(0.2)
+                .call(() => {
+                    AudioManager.getInstance().playSound('ding');
+                    spriteNode.getComponent(Sprite).grayscale = false;
+                    this.setGuideAnim()
+                    this.shootNode1.on(Node.EventType.TOUCH_END, this.onGunNodeClick, this);
+                })
+                .start()
+        });
     }
     cashoutFunc() {
         PlayerAdSdk.jumpStore();
@@ -499,15 +654,12 @@ export class GameUI extends Component {
     }
 
     protected onDestroy(): void {
-        // 清理全局点击监听
         this.node.off(Node.EventType.TOUCH_END, this.onGlobalClick, this);
 
-        // 清理gunNode点击监听
         if (this.shootNode0) {
             this.shootNode0.off(Node.EventType.TOUCH_END, this.onGunNodeClick, this);
         }
 
-        // 清理子弹对象池
         if (this.bulletPool) {
             this.bulletPool.clear();
             this.bulletPool = null;

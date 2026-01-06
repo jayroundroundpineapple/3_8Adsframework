@@ -76,6 +76,6 @@ export class WebAdapter extends Component {
         }
         let isVerticalScreen: boolean = Utils.isVertical();
         this.maxBg.active = !isVerticalScreen;
-        this.bgNode.getComponent(Widget).right = isVerticalScreen ? 0 : windowSize.width / 3
+        this.bgNode.getComponent(Widget).right = isVerticalScreen ? 0 : windowSize.width / 2.5
     }
 }

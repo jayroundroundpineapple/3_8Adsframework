@@ -1,4 +1,4 @@
-import { Node, tween, Vec3, screen } from 'cc';
+import { Node, tween, Vec3, screen, director, Widget } from 'cc';
 
 export class Utils {
     /**
@@ -119,7 +119,7 @@ export class Utils {
             this.hidePopup(node, duration);
         }
     }
-    public static setScale(node: Node, scale: number, duration: number = 0.15,isRepeatForever: boolean = false, cb: Function = null): void {
+    public static setScale(node: Node, scale: number, duration: number = 0.15, isRepeatForever: boolean = false, cb: Function = null): void {
         if (isRepeatForever) {
             tween(node).repeatForever(
                 tween(node).to(duration, { scale: new Vec3(scale, scale, 1) }).to(duration, { scale: new Vec3(1, 1, 1) })
@@ -146,6 +146,17 @@ export class Utils {
         const windowSize = screen.windowSize;
         return windowSize.width / windowSize.height;
     }
+    /**刷新屏幕widget */
+    public static refreshScreen(): void {
+        const scene = director.getScene();
+        if (!scene) {
+            return;
+        }
+        const widgets = scene.getComponentsInChildren(Widget);
+        widgets.forEach(widget => {
+            widget.updateAlignment();
+        });
+    }
 
     /**
      * 屏幕震动效果（节点位置震动动画）
@@ -156,12 +167,12 @@ export class Utils {
      * @param onComplete 震动完成回调
      */
     public static shakeScreen(
-        node: Node,
-        duration: number = 0.3,
-        intensity: number = 10,
-        speed: number = 0.02,
-        onComplete?: () => void
-    ): void {
+            node: Node,
+            duration: number = 0.3,
+            intensity: number = 10,
+            speed: number = 0.02,
+            onComplete?: () => void
+        ): void {
         if (!node || !node.isValid) {
             console.error('[Utils] shakeScreen: node 不能为空或无效');
             return;
