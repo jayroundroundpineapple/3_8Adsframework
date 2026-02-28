@@ -73,6 +73,7 @@ export class GameUI extends Component {
     protected onLoad(): void {
         PlayerAdSdk.init();
         this.initAllPixelSprites();
+        this.setFirstGuide();
         this.setupAudioNodes();
         this.setupGlobalClick();
     }
@@ -85,7 +86,8 @@ export class GameUI extends Component {
             .call(() => {
                 this.spinBtn.active = true;
                 Utils.setScale(this.spinBtn, 1.1, 0.3, true);
-                this.spinBtn.on(Node.EventType.TOUCH_START, this.onSpinBtnClick, this);
+                this.spinBtn.on(Node.EventType.TOUCH_START, this.
+                    onSpinBtnClick, this);
             })
             .start()
     }
@@ -119,8 +121,10 @@ export class GameUI extends Component {
     }
     start() {
         (window as any).gameUI = this;
-        this.gameMask.active = this.resultNode.active = this.maskNode.active = false;
-        this.initSpinUI();
+        this.resultNode.active = this.maskNode.active = false;
+        this.gameMask.active = true
+        this.setFirstGuide()
+        // this.initSpinUI();
         this.initBulletPool();
     }
     setFirstGuide() {
